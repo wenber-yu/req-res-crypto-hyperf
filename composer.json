@@ -1,5 +1,5 @@
 {
-  "name": "wenbo/req-res-crypto-hyperf",
+  "name": "wenber-yu/req-res-crypto-hyperf",
   "description": "Hyperf adapter for req-res-crypto-core: middleware, annotation, commands, crontab, and database key provider.",
   "type": "library",
   "license": "MIT",
@@ -11,7 +11,7 @@
   ],
   "require": {
     "php": ">=8.3",
-    "wenbo/req-res-crypto-core": "^0.1",
+    "wenber-yu/req-res-crypto-core": "^0.1",
     "hyperf/framework": "~3.2.0",
     "hyperf/http-message": "~3.2.0"
   },
