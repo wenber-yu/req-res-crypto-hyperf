@@ -1,0 +1,64 @@
+{
+  "name": "wenbo/req-res-crypto-hyperf",
+  "description": "Hyperf adapter for req-res-crypto-core: middleware, annotation, commands, crontab, and database key provider.",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "wenbo",
+      "homepage": "https://wenber.club"
+    }
+  ],
+  "require": {
+    "php": ">=8.3",
+    "wenbo/req-res-crypto-core": "*",
+    "hyperf/framework": "~3.2.0",
+    "hyperf/http-message": "~3.2.0"
+  },
+  "require-dev": {
+    "phpstan/phpstan": "^1.12",
+    "mockery/mockery": "^1.6",
+    "psr/http-server-middleware": "^1.0",
+    "hyperf/command": "^3.2",
+    "hyperf/di": "^3.2",
+    "hyperf/db-connection": "^3.2",
+    "hyperf/testing": "^3.2",
+    "laravel/pint": "^1.29"
+  },
+  "autoload": {
+    "psr-4": {
+      "Wenbo\\ReqResCrypto\\Hyperf\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Wenbo\\ReqResCrypto\\Hyperf\\Tests\\": "tests/"
+    },
+    "files": [
+      "tests/Helpers.php"
+    ]
+  },
+  "extra": {
+    "hyperf": {
+      "config": "Wenbo\\ReqResCrypto\\Hyperf\\ConfigProvider"
+    }
+  },
+  "scripts": {
+    "test": "co-phpunit",
+    "test:coverage": "co-phpunit --coverage-text",
+    "analyse": "phpstan analyse src --level=max",
+    "pint": "pint --parallel --repair"
+  },
+  "config": {
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "repositories": [
+    {
+      "name": "core",
+      "type": "path",
+      "url": "../req-res-crypto-core"
+    }
+  ],
+  "version": "0.1.0"
+}
