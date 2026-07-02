@@ -1,6 +1,6 @@
 # req-res-crypto-hyperf
 
-Hyperf 适配层，为 [req-res-crypto-core](../req-res-crypto-core/README.md) 提供 PSR-15 中间件、命令、Crontab 定时轮换和数据库密钥管理。
+Hyperf 适配层，为 [req-res-crypto-core](https://github.com/wilbur-yu/req-res-crypto-core) 提供 PSR-15 中间件、命令、Crontab 定时轮换和数据库密钥管理。
 
 依赖：PHP >= 8.3，Hyperf ~3.2。
 
@@ -40,6 +40,8 @@ php bin/hyperf.php vendor:publish wenbo/req-res-crypto-hyperf
 | `database.table` | — | `req_res_crypto_public_keys` | 密钥数据表名 |
 | `crontab.enabled` | `REQ_RES_CRYPTO_CRONTAB_ENABLED` | `true` | 是否注册 Crontab 定时任务 |
 | `crontab.rule` | — | `0 2 * * *` | Crontab 执行规则（默认每天凌晨 2 点） |
+| `skip_routes` | — | `[]` | 跳过加解密的路由模式（支持 `*` / `**` 通配符） |
+| `skip_header` | `REQ_RES_CRYPTO_SKIP_HEADER` | `X-Skip-Req-Res-Crypto` | 前端声明跳过加密的请求头名称 |
 
 > **统一设计**：配置结构已完全扁平化（不再有 `default.*` 子数组）。无论 `key_rotation.enabled` 开启与否，中间件和 API 使用方式完全一致。
 
@@ -201,6 +203,65 @@ class OrderController extends AbstractController
 
 > **注意**：`#[Middleware]` 注解和全局中间件可以共存，不会重复执行。
 
+## 跳过加解密
+
+三种方式可让特定路由跳过加解密处理，优先级从高到低：
+
+### 方式一：`#[SkipReqResCrypto]` 注解（推荐）
+
+在控制器类或方法上标注，该路由完全跳过加解密：
+
+```php
+use Wenbo\ReqResCrypto\Hyperf\Attributes\SkipReqResCrypto;
+
+// 整个控制器跳过
+#[SkipReqResCrypto]
+class HealthController extends AbstractController
+{
+    public function check(): array
+    {
+        return ['status' => 'ok'];
+    }
+}
+
+// 单个方法跳过
+class ApiController extends AbstractController
+{
+    #[SkipReqResCrypto]
+    public function publicEndpoint(): array
+    {
+        return ['data' => 'public'];
+    }
+}
+```
+
+### 方式二：`skip_routes` 路径模式
+
+在配置中按 URL 模式批量跳过：
+
+```php
+// config/autoload/req-res-crypto.php
+'skip_routes' => [
+    '/health',
+    '/api/public/**',   // /api/public 下所有路径
+    '/api/docs/*',      // /api/docs 下单层路径
+],
+```
+
+### 方式三：`skip_header` 请求头
+
+前端在请求中携带 `X-Skip-Req-Res-Crypto: 1` 头，**仅在路由命中 skip_routes 或 SkipReqResCrypto 注解时**服务端才接受明文，否则返回 400 错误。跳过加密时响应中会返回同名响应头，通知前端此次响应为明文。
+
+```typescript
+// 前端：声明发送明文
+fetch('/api/health', {
+  headers: { 'X-Skip-Req-Res-Crypto': '1' },
+});
+// 响应头中自动返回 X-Skip-Req-Res-Crypto: 1
+```
+
+> **安全机制**：skip_header 是"白名单确认"机制，不是"无条件跳过"。前端声明跳过 + 后端路由不在白名单 = 直接拒绝，防止攻击者伪造请求头绕过加密。
+
 ## Crontab（定时密钥轮换）
 
 `ConfigProvider` 自动注册 Crontab 任务 `KeyRotationCrontab`。
@@ -301,5 +362,11 @@ await fetch('/api/orders', {
 | 响应 body | `base64(wire_format)` |
 | 响应头 `X-Req-Res-Crypto-Key-Rotate`（可选） | JSON：`{"key_id":"...","sign_public_key":"...","exchange_public_key":"..."}` — 密钥轮换通知 |
 
-前端加密和解密的完整 TypeScript 实现参见 [核心包 README — 前端对接章节](../req-res-crypto-core/README.md#前端对接typescript--javascript)。
-*（内容由AI生成，仅供参考）*
+前端加密和解密的完整 TypeScript 实现参见 [核心包 README — 前端对接章节](https://github.com/wilbur-yu/req-res-crypto-core#%E5%89%8D%E7%AB%AF%E5%AF%B9%E6%8E%A5typescript--javascript)。
+
+## 相关包
+
+| 包 | 说明 |
+| --- | --- |
+| [req-res-crypto-core](https://github.com/wilbur-yu/req-res-crypto-core) | 核心加解密库（零框架依赖） |
+| [req-res-crypto-laravel](https://github.com/wilbur-yu/req-res-crypto-laravel) | Laravel 适配包 |
