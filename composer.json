@@ -11,7 +11,7 @@
   ],
   "require": {
     "php": ">=8.3",
-    "wenbo/req-res-crypto-core": "*",
+    "wenbo/req-res-crypto-core": "^0.1",
     "hyperf/framework": "~3.2.0",
     "hyperf/http-message": "~3.2.0"
   },
@@ -52,12 +52,5 @@
   "config": {
   },
   "minimum-stability": "dev",
-  "prefer-stable": true,
-  "repositories": [
-    {
-      "name": "core",
-      "type": "path",
-      "url": "../req-res-crypto-core"
-    }
-  ]
+  "prefer-stable": true
 }
