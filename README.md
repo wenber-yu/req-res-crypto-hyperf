@@ -7,7 +7,7 @@ Hyperf 适配层，为 [req-res-crypto-core](https://github.com/wenber-yu/req-re
 ## 安装
 
 ```bash
-composer require wenbo/req-res-crypto-hyperf
+composer require wenber-yu/req-res-crypto-hyperf
 ```
 
 Hyperf 通过 `ConfigProvider` 自动注册所有依赖绑定、命令和 Crontab，无需手动配置。
@@ -15,7 +15,7 @@ Hyperf 通过 `ConfigProvider` 自动注册所有依赖绑定、命令和 Cronta
 ## 配置发布
 
 ```bash
-php bin/hyperf.php vendor:publish wenbo/req-res-crypto-hyperf
+php bin/hyperf.php vendor:publish wenber-yu/req-res-crypto-hyperf
 ```
 
 发布后生成：
